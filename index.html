@@ -1,20 +1,84 @@
 <!DOCTYPE html>
-<html>
 <html lang="pt-BR">
-<meta charset="UTF-8">
 <head>
-<title>Domain Consultant</title>
+    <meta charset="UTF-8">
+    <title>Domain Consultant</title>
+    <!-- Link do CSS do Bootstrap -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h4 {
+            margin: 10px 0 5px;
+        }
+        p {
+            margin: 0 0 10px;
+            padding: 10px;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+        }
+    </style>
 </head>
 <body>
-<form>
-<h1>Verifique aqui o seu domínio e veja todas as informações</h1>
-<fieldset>
-<legend>Preencha o campo e clique em verificar domínio</legend>
-<label for="domain">Digite aqui o seu domínio</label>
-<input type="text" value="exemplo.com.br" id="domain" maxlength="40" required>
-<input type="submit" value="Verificar domínio agora">
-</fieldset>
-</form>
+    <div class="container">
+        <form id="domainForm" class="mt-5">
+            <h1>Verifique aqui o seu domínio e veja todas as informações</h1>
+            <fieldset class="border p-4">
+                <legend class="w-auto">Preencha os campos e clique em verificar domínio</legend>
+                <div class="form-group">
+                    <label for="domain">Digite aqui o seu domínio</label>
+                    <input type="text" class="form-control" value="exemplo.com.br" id="domain" maxlength="40" required>
+                </div>
+                <div class="form-group">
+                    <label for="desc">Digite uma descrição para o seu site</label>
+                    <input type="text" class="form-control" value="Meu site" id="desc" maxlength="40" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Verificar domínio agora</button>
+            </fieldset>
+        </form>
+        <div id="result" class="mt-4"></div>
+    </div>
+
+    <!-- Script do JavaScript do Bootstrap e Popper.js -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        document.getElementById('domainForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var domain = document.getElementById('domain').value;
+            var desc = document.getElementById('desc').value;
+            var url = `http://127.0.0.1:8000/site/${encodeURIComponent(domain)}?desc=${encodeURIComponent(desc)}`;
+
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok ' + response.statusText);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    var resultDiv = document.getElementById('result');
+                    resultDiv.innerHTML = ''; // Limpar resultados anteriores
+                    for (var key in data) {
+                        if (data.hasOwnProperty(key)) {
+                            var h4 = document.createElement('h4');
+                            h4.textContent = key;
+                            var p = document.createElement('p');
+                            p.textContent = data[key];
+                            resultDiv.appendChild(h4);
+                            resultDiv.appendChild(p);
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                    document.getElementById('result').innerHTML = `Erro ao buscar os dados: ${error.message}`;
+                });
+        });
+    </script>
 </body>
-</html>
 </html>
