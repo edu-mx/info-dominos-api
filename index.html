@@ -75,8 +75,7 @@
                     }
                 })
                 .catch(error => {
-                    console.error('Erro:', error);
-                    document.getElementById('result').innerHTML = `Erro ao buscar os dados: ${error.message}`;
+                    document.getElementById('result').innerHTML = `Erro ao buscar informações de "${domain}", por favor tente novamente.`;
                 });
         });
     </script>
